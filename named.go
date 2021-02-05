@@ -224,10 +224,17 @@ func bindStruct(bindType int, query string, arg interface{}, m *reflectx.Mapper)
 	return bound, arglist, nil
 }
 
-var valueBracketReg = regexp.MustCompile(`\([^(]*.[^(]\)\s*$`)
+var valueBracketReg = regexp.MustCompile(`\([^()]*\)`)
 
 func fixBound(bound string, loop int) string {
-	loc := valueBracketReg.FindStringIndex(bound)
+	// Find all innermost paren pairs
+	locs := valueBracketReg.FindAllStringIndex(bound, -1)
+	if len(locs) == 0 {
+		return bound
+	}
+
+	// Select the last pair for rewriting
+	loc := locs[len(locs)-1]
 	if len(loc) != 2 {
 		return bound
 	}

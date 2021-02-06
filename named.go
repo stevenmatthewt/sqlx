@@ -224,7 +224,7 @@ func bindStruct(bindType int, query string, arg interface{}, m *reflectx.Mapper)
 	return bound, arglist, nil
 }
 
-var valueBracketReg = regexp.MustCompile(`\([^()]*\)`)
+var valueBracketReg = regexp.MustCompile(`\(\?(, \?)*\)`)
 
 func fixBound(bound string, loop int) string {
 	// Find all innermost paren pairs
